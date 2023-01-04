@@ -205,121 +205,191 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTextStyle(
-      style: Theme.of(context).textTheme.bodyMedium!,
-      child: LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints viewportConstraints) {
-          return SingleChildScrollView(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(
-                minHeight: viewportConstraints.maxHeight,
-              ),
-              child: IntrinsicHeight(
-                child: Column(
-                  children: <Widget>[
-                    Expanded(
-                      // A flexible child that will grow to fit the viewport but
-                      // still be at least as big as necessary to fit its contents.
-                      child: Container(
-                        color: const Color(0xffee0000), // Red
-                        height: 120.0,
-                        alignment: Alignment.center,
-                        child: Column(
-                          children: [
-                            Text("hello"),
-                            Text("Goodbye"),
-                            Text("hello1"),
-                            Text("Goodbye"),
-                            Text("hello2"),
-                            Text("Goodbye"),
-                            Text("hello3"),
-                            Text("Goodbye"),
-                            Text("hello4"),
-                            Text("Goodbye"),
-                            Text("hello5"),
-                            Text("Goodbye"),
-                            Text("hello6"),
-                            Text("Goodbye"),
-                            Text("hello7"),
-                            Text("Goodbye"),
-                            Text("hello8"),
-                            Text("Goodbye"),
-                            Text("hello9"),
-                            Text("Goodbye"),
-                            Text("hello0"),
-                            Text("Goodbye"),
-                            Text("hello1"),
-                            Text("Goodbye"),
-                            Text("hello2"),
-                            Text("Goodbye"),
-                            Text("hello3"),
-                            Text("Goodbye"),
-                            Text("hello4"),
-                            Text("Goodbye"),
-                            Text("hello5"),
-                            Text("Goodbye"),
-                            Text("hello6"),
-                            Text("Goodbye"),
-                            Text("hello7"),
-                            Text("Goodbye"),
-                            Text("hello8"),
-                            Text("Goodbye"),
-                            Text("hello"),
-                            Text("Goodbye"),
-                            Text("hello1"),
-                            Text("Goodbye"),
-                            Text("hello2"),
-                            Text("Goodbye"),
-                            Text("hello3"),
-                            Text("Goodbye"),
-                            Text("hello4"),
-                            Text("Goodbye"),
-                            Text("hello5"),
-                            Text("Goodbye"),
-                            Text("hello6"),
-                            Text("Goodbye"),
-                            Text("hello7"),
-                            Text("Goodbye"),
-                            Text("hello8"),
-                            Text("Goodbye"),
-                            Text("hello9"),
-                            Text("Goodbye"),
-                            Text("hello0"),
-                            Text("Goodbye"),
-                            Text("hello1"),
-                            Text("Goodbye"),
-                            Text("hello2"),
-                            Text("Goodbye"),
-                            Text("hello3"),
-                            Text("Goodbye"),
-                            Text("hello4"),
-                            Text("Goodbye"),
-                            Text("hello5"),
-                            Text("Goodbye"),
-                            Text("hello6"),
-                            Text("Goodbye"),
-                            Text("hello7"),
-                            Text("Goodbye"),
-                            Text("hello8"),
-                            Text("Goodbye"),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Container(
-                      // A fixed-height child.
-                      color: const Color(0xffeeee00), // Yellow
-                      height: 120.0,
-                      alignment: Alignment.center,
-                      child: const Text('Fixed Height Content'),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          );
-        },
+    return Container(
+      color: Colors.amber[600],
+      child: FittedBox(
+        child: Column(children: [
+          Container(flex: 5, child: Text("sdf")),
+          Container(child: Text("sdf")),
+        ]),
       ),
     );
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+ Widget build(BuildContext context) {
+    if (gameFinal == true) {
+      return Scaffold(
+          backgroundColor: Colors.grey[700],
+          body: Center(
+            child:
+                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Text(
+                "Шуст от\u{00A0}всей души поздравляет вас с\u{00A0}наступающим новым 2023 годом!",
+                style: TextStyle(color: Colors.white, fontSize: 40),
+                textAlign: TextAlign.center,
+              ),
+              Padding(
+                padding: const EdgeInsets.all(30.0),
+                child: Image.asset('lib/images/present.gif'),
+              )
+            ]),
+          ));
+    } else {
+      return Scaffold(
+        backgroundColor: Colors.black,
+        body: Column(children: [
+          Expanded(
+              flex: 5,
+              child: GestureDetector(
+                  onVerticalDragUpdate: (details) {
+                    if (details.delta.dy > 0) {
+                      direction = "down";
+                    } else if (details.delta.dy < 0) {
+                      direction = "up";
+                    }
+                  },
+                  onHorizontalDragUpdate: (details) {
+                    if (details.delta.dx > 0) {
+                      direction = "right";
+                    } else if (details.delta.dx < 0) {
+                      direction = "left";
+                    }
+                  },
+                  child: Container(
+                    child: GridView.builder(
+                        physics: NeverScrollableScrollPhysics(),
+                        itemCount: numberOfSquares,
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: numberInRow),
+                        itemBuilder: (BuildContext context, int index) {
+                          if (player == index) {
+                            switch (direction) {
+                              case "left":
+                                return Transform.rotate(
+                                  angle: pi,
+                                  child: MyPlayer(),
+                                );
+                                break;
+                              case "right":
+                                return MyPlayer();
+                                break;
+                              case "up":
+                                return Transform.rotate(
+                                  angle: 3 * pi / 2,
+                                  child: MyPlayer(),
+                                );
+                                break;
+                              case "down":
+                                return Transform.rotate(
+                                  angle: pi / 2,
+                                  child: MyPlayer(),
+                                );
+                                break;
+
+                              default:
+                                return MyPlayer();
+                            }
+                          } else if (barriers.contains(index)) {
+                            return MyPixel(
+                              innerColor: Colors.blue[800],
+                              outerColor: Colors.blue[900],
+                            );
+                          } else if (food.contains(index) || !gameStarted) {
+                            return MyPath(
+                              innerColor: Colors.yellow,
+                              outerColor: Colors.black,
+                            );
+                          } else {
+                            return MyPath(
+                              innerColor: Colors.black,
+                              outerColor: Colors.black,
+                            );
+                          }
+                        }),
+                  ))),
+          Expanded(
+              child: Container(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Text(
+                  "Score: $score",
+                  style: TextStyle(color: Colors.white, fontSize: 30),
+                ),
+                GestureDetector(
+                  onTap: startGame,
+                  child: Text(
+                    "P L A Y",
+                    style: TextStyle(color: Colors.white, fontSize: 30),
+                  ),
+                ),
+              ],
+            ),
+          )),
+        ]),
+      );
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+  Text("hello"),
+              Text("Goodbye"),
+              Text("hello1"),
+              Text("Goodbye"),
+              Text("hello2"),
+              Text("Goodbye"),
+              Text("hello3"),
+              Text("Goodbye"),
+              Text("hello4"),
+              Text("Goodbye"),
+              Text("hello5"),
+              Text("Goodbye"),
+              Text("hello6"),
+              Text("Goodbye"),
+              Text("hello7"),
+              Text("Goodbye"),
+              Text("hello8"),
+              Text("Goodbye"),
+              Text("hello9"),
+              Text("Goodbye"),
+              Text("hello0"),
+              Text("Goodbye"),
+              Text("hello1"),
+              Text("Goodbye"),
+              Text("hello2"),
+              Text("Goodbye"),
+              Text("hello3"),
+              Text("Goodbye"),
+              Text("hello4"),
+              Text("Goodbye"),
+              Text("hello5"),
+              Text("Goodbye"),
+              Text("hello6"),
+              Text("Goodbye"),
+              Text("hello7"),
+              Text("Goodbye"),
+              Text("hello8"),
+              Text("Goodbye"),
